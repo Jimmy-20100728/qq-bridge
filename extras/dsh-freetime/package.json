@@ -1,0 +1,13 @@
+{
+  "name": "dsh-freetime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "description": "让 DSH 自己定时跑「自由时间」：上网、记浏览心得、写日记。只依赖 DSH，不需要 qq-bridge。",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

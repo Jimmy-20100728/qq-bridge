@@ -1,0 +1,33 @@
+# freetime profile —— headless 跑「自由时间」时挂载的 MCP。
+#
+# 为什么单独一个 profile：
+#   web profile 是「起服务端」的桌面应用，不能带 prompt 参数跑一次性任务。
+#   实测 `dsh --profile web "xxx"` 会报
+#     error: too many arguments. Expected 0 arguments but got 1
+#   一次性任务必须用 @deepseek-ai/dsh-headless（见同目录 package.json）。
+#
+# 这两处 @@...@@ 占位符由 `node scripts/setup-integration.mjs --apply` 自动替换：
+#   @@NODE_EXE@@   —— node.exe 的绝对路径。DSH 0.1.7 起 resources\app 打包成 app.asar，
+#                     不再自带 node.exe，MCP 的 command 必须写绝对路径，否则
+#                     `SdkError: Connection closed`，agent 静默空转。
+#   @@BRIDGE_DIR@@ —— 本仓库（qq-bridge）的绝对路径，用来找到 src/mcp-*.js。
+#
+# ego 浏览器只装在桌面 web profile 里，headless 没有；自由时间提示词里已把它写成
+# 「有就用、没有就 web_fetch」，所以这里不挂。
+- insert:
+    - id: mcp-web-search-safe
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: web-search-safe
+        transport: stdio
+        command: '@@NODE_EXE@@'
+        args:
+          - '@@BRIDGE_DIR@@\src\mcp-web-search-safe.js'
+    - id: mcp-diary
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: diary
+        transport: stdio
+        command: '@@NODE_EXE@@'
+        args:
+          - '@@BRIDGE_DIR@@\src\mcp-diary.js'
